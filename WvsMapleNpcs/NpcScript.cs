@@ -7,7 +7,8 @@ namespace WvsGame.Maple.Scripting
     public abstract class NpcScript
     {
         private string _textBuffer;
-        public Player Player { get; set; }
+
+        public Player Talker { get; internal set; }
 
         public abstract Task Run();
 
@@ -133,7 +134,7 @@ namespace WvsGame.Maple.Scripting
         /// <summary>
         /// Returns the talker's field.
         /// </summary>
-        public int GetField() { return Player.Field; }
+        public int GetField() { return Talker.Field; }
 
         /// <summary>
         /// Sets the talker's field to the given field.
@@ -149,40 +150,40 @@ namespace WvsGame.Maple.Scripting
         public void SetField(int ID, int spawnPoint)
         {
             Console.WriteLine("Player field set to {0}. ({1})", ID, spawnPoint);
-            Player.Field = ID;
+            Talker.Field = ID;
         }
 
         /// <summary>
         /// Returns the talker's level.
         /// </summary>
-        public int GetLevel() { return Player.Level; }
+        public int GetLevel() { return Talker.Level; }
 
         /// <summary>
         /// Returns the talker's job.
         /// </summary>
-        public int GetJob() { return Player.Job; }
+        public int GetJob() { return Talker.Job; }
 
         /// <summary>
         /// Returns the talker's strength.
         /// </summary>
-        public int GetStrength() { return Player.Strength; }
+        public int GetStrength() { return Talker.Strength; }
 
         /// <summary>
         /// Returns the talker's dexterity.
         /// </summary>
-        public int GetDexterity() { return Player.Dexterity; }
+        public int GetDexterity() { return Talker.Dexterity; }
 
         /// <summary>
         /// Returns the talker's intelligence.
         /// </summary>
         /// <returns></returns>
-        public int GetIntelligence() { return Player.Intelligence; }
+        public int GetIntelligence() { return Talker.Intelligence; }
 
         /// <summary>
         /// Returns the talker's luck.
         /// </summary>
         /// <returns></returns>
-        public int GetLuck() { return Player.Luck; }
+        public int GetLuck() { return Talker.Luck; }
 
         /// <summary>
         /// If the amount is negative
@@ -232,7 +233,7 @@ namespace WvsGame.Maple.Scripting
         /// </summary>
         /// <param name="ID">The maple id of the item.</param>
         /// <param name="amount">The amount of the item that is needed.</param>
-        public bool HasItem(int ID, int amount) { return Player.Inventory.HasItem(ID, amount); }
+        public bool HasItem(int ID, int amount) { return Talker.Inventory.HasItem(ID, amount); }
 
         /// <summary>
         /// Clears all items of the specified item ID's in the talkers inventory.
@@ -256,7 +257,7 @@ namespace WvsGame.Maple.Scripting
         /// Returns the given item's quantity of the talker.
         /// </summary>
         /// <param name="ID">The maple id of the item.</param>
-        public int GetItemAmount(int ID) { return Player.Inventory.Count(ID); }
+        public int GetItemAmount(int ID) { return Talker.Inventory.Count(ID); }
 
         /// <summary>
         /// Returns true if the talker has the given quest started.
@@ -298,7 +299,7 @@ namespace WvsGame.Maple.Scripting
         /// <summary>
         /// Returns the talker's name.
         /// </summary>
-        public string PlayerRef() { return Player.Name; }
+        public string PlayerRef() { return Talker.Name; }
 
         /// <summary>
         /// Returns the name of the given npc.
