@@ -251,7 +251,7 @@ namespace WvsGame.Maple.Scripting
         /// Returns true if the talker has enough open slots for the given item.
         /// </summary>
         /// <param name="ID">The maple id of the item.</param>
-        public bool HasOpenSlotsFor(int ID) { return true; }
+        public bool HasOpenSlotsFor(int ID) { return Talker.Inventory.HasRoomFor(ID, 1); }
 
         /// <summary>
         /// Returns the given item's quantity of the talker.
