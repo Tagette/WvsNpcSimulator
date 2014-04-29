@@ -16,6 +16,7 @@ namespace WvsMapleNpcTester
 
             Player me = new Player("Tagette", 100, 412)
             {
+                Meso = int.MaxValue,
                 Strength = 5,
                 Intelligence = 5,
                 Dexterity = 32767,

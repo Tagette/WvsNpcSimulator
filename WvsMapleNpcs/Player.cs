@@ -13,6 +13,7 @@
         private string _name;
         private int _level;
         private int _job;
+        private int _meso;
         private int _field;
         private int _str;
         private int _int;
@@ -46,6 +47,12 @@
         {
             get { return _job; }
             set { _job = value; }
+        }
+
+        public int Meso
+        {
+            get { return _meso; }
+            set { _meso = value; }
         }
 
         public int Field
