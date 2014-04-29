@@ -89,7 +89,7 @@ namespace WvsGame.Maple.Scripting
         /// <param name="selections">The selections for the menu. The first argument is 0.</param>
         public async Task<byte> SendMenu(params string[] selections)
         {
-            PrintWithColor(_textBuffer);
+            ConsoleTools.PrintWithNpcColor(_textBuffer);
             ClearTextBuffer();
 
             if (selections == null || selections.Length == 0)
@@ -103,7 +103,7 @@ namespace WvsGame.Maple.Scripting
                 {
                     for (int i = 0; i < selections.Length; i++)
                     {
-                        PrintWithColor((i + 1) + ") " + selections[i]);
+                        ConsoleTools.PrintWithNpcColor((i + 1) + ") " + selections[i]);
                     }
                     Console.Write("Choose> ");
                     string input = Console.ReadLine();
@@ -311,67 +311,6 @@ namespace WvsGame.Maple.Scripting
         private void ClearTextBuffer()
         {
             _textBuffer = string.Empty;
-        }
-
-        /*
-        #b = Blue text.
-        #d = Purple text.
-        #g = Green text.
-        #k = Black text.
-        #n = Normal text.
-        #r = Red text.
-         */
-        private static void PrintWithColor(string text)
-        {
-            ConsoleColor originalColor = Console.ForegroundColor;
-            var matches = Regex.Matches(text, "#[bkdrgn]");
-
-            if (matches.Count == 0)
-            {
-                Console.WriteLine(text);
-                return;
-            }
-
-            if (matches[0].Index > 0)
-            {
-                Console.Write(text.Substring(0, matches[0].Index - 0));
-            }
-
-            for (int i = 0; i < matches.Count; i++)
-            {
-                int startIndex = matches[i].Index + 2;
-                int endIndex = text.Length;
-                if (i + 1 < matches.Count)
-                {
-                    endIndex = matches[i + 1].Index;
-                }
-                string tag = text.Substring(matches[i].Index, 2);
-                Console.ForegroundColor = GetConsoleColorFromTag(tag, originalColor);
-
-                Console.Write(text.Substring(startIndex, endIndex - startIndex));
-            }
-            Console.WriteLine();
-            Console.ForegroundColor = originalColor;
-        }
-
-        private static ConsoleColor GetConsoleColorFromTag(string tag, ConsoleColor defaultColor)
-        {
-            switch (tag)
-            {
-                case "#b":
-                    return ConsoleColor.Blue;
-                case "#k":
-                    return ConsoleColor.DarkGray;
-                case "#d":
-                    return ConsoleColor.Magenta;
-                case "#r":
-                    return ConsoleColor.Red;
-                case "#g":
-                    return ConsoleColor.Green;
-                case "#n":
-                    return defaultColor;
-            }
-            return defaultColor;
         }
     }
 }
