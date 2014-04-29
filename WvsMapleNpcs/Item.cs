@@ -9,23 +9,17 @@ namespace WvsGame.Maple.Scripting
     public class Item
     {
         private int _id;
-        private string _name;
         private int _amount;
 
-        public Item(int id, string name)
+        public Item(int id)
         {
             _id = id;
-            _name = name;
+            _amount = 1;
         }
 
         public int ID
         {
             get { return _id; }
-        }
-
-        public string Name
-        {
-            get { return _name; }
         }
 
         public int Amount
