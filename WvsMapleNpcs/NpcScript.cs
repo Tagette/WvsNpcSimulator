@@ -8,6 +8,7 @@ namespace WvsGame.Maple.Scripting
     {
         private string _textBuffer;
 
+        public Npc Parent { get; internal set; }
         public Player Talker { get; internal set; }
 
         public abstract Task Run();
