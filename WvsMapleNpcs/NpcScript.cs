@@ -196,6 +196,7 @@ namespace WvsGame.Maple.Scripting
         /// <param name="amount">The amount to add.</param>
         public bool GainMeso(int amount)
         {
+            Talker.Meso += amount;
             Talker.Notify(string.Format("Player {0} {1} mesos.", amount > 0 ? "gained" : "lost", Math.Abs(amount))); return amount > 0;
         }
 
