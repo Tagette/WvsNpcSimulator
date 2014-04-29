@@ -21,6 +21,25 @@ namespace WvsGame.Maple.Scripting
             get { return _player; }
         }
 
+        public Item[] Items
+        {
+            get { return _items; }
+        }
+
+        public bool IsEmpty()
+        {
+            bool empty = true;
+            for (int i = 0; i < _items.Length; i++)
+            {
+                if (_items[i] != null)
+                {
+                    empty = false;
+                    break;
+                }
+            }
+            return empty;
+        }
+
         public bool HasItem(int ID)
         {
             return HasItem(ID, 1);
@@ -120,6 +139,13 @@ namespace WvsGame.Maple.Scripting
                 }
             }
             return true;
+        }
+
+        public void ClearItem(int ID)
+        {
+            for (int i = 0; i < _items.Length; i++)
+                if (_items[i] != null && _items[i].ID == ID)
+                    _items[i] = null;
         }
 
         public int Count(int ID)
