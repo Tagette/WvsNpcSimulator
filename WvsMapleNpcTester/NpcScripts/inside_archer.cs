@@ -22,8 +22,6 @@ public class inside_archer : NpcScript
     private const int REWARD_AMOUNT = 1;
     private const int EXIT_MAP = 106010000;
 
-    private readonly int[] _clearItems = { REQUIRED_ITEM, 4031010 };
-
     public override async Task Run()
     {
         if (HasItem(REQUIRED_ITEM, REQUIRED_AMOUNT))
@@ -32,7 +30,9 @@ public class inside_archer : NpcScript
             AddText("Alright. You've passed the test and for that, I'll reward you #b{0}#k. ", ItemIcon(REQUIRED_ITEM));
             AddText("Take that item and go back to Henesys.");
             await SendNext();
-            ClearItems(_clearItems);
+
+            ClearItem(REQUIRED_ITEM);
+            ClearItem(4031010);
 
             GainItem(REWARD_ITEM, 1);
             SetField(100000000);
