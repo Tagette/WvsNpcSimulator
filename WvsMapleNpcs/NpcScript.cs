@@ -150,8 +150,8 @@ namespace WvsGame.Maple.Scripting
         /// <param name="spawnPoint">The spawn point in the field.</param>
         public void SetField(int ID, int spawnPoint)
         {
-            Console.WriteLine("Player field set to {0}. ({1})", ID, spawnPoint);
             Talker.Field = ID;
+            Talker.Notify(string.Format("Player field set to {0}. ({1})", ID, spawnPoint));
         }
 
         /// <summary>
@@ -196,7 +196,7 @@ namespace WvsGame.Maple.Scripting
         /// <param name="amount">The amount to add.</param>
         public bool GainMeso(int amount)
         {
-            Console.WriteLine("Player {0} {1} mesos.", amount > 0 ? "gained" : "lost", Math.Abs(amount)); return amount > 0;
+            Talker.Notify(string.Format("Player {0} {1} mesos.", amount > 0 ? "gained" : "lost", Math.Abs(amount))); return amount > 0;
         }
 
         /// <summary>
@@ -219,8 +219,8 @@ namespace WvsGame.Maple.Scripting
         /// <param name="amount">The amount of the item.</param>
         public bool GainItem(int ID, int amount)
         {
-            Console.WriteLine("Player {0} {1} item. ({2})", amount > 0 ? "gained" : "lost", Math.Abs(amount), ID); return amount > 0;
             Player.Inventory.GainItem(ID, amount);
+            Talker.Notify(string.Format("Player {0} {1} item. ({2})", amount > 0 ? "gained" : "lost", Math.Abs(amount), ID)); return amount > 0;
         }
 
         /// <summary>
@@ -244,8 +244,8 @@ namespace WvsGame.Maple.Scripting
         {
             foreach (int id in ID)
             {
-                Console.WriteLine("Cleared all {0}.", id);
             }
+            Talker.Notify(string.Format("Cleared all {0}.", ID));
         }
 
         /// <summary>
