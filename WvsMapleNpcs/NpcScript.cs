@@ -238,14 +238,12 @@ namespace WvsGame.Maple.Scripting
         public bool HasItem(int ID, int amount) { return Talker.Inventory.HasItem(ID, amount); }
 
         /// <summary>
-        /// Clears all items of the specified item ID's in the talkers inventory.
+        /// Clears all items of the specified item ID in the talkers inventory.
         /// </summary>
         /// <param name="ID">The maple id of the item.</param>
-        public void ClearItems(params int[] ID)
+        public void ClearItem(int ID)
         {
-            foreach (int id in ID)
-            {
-            }
+            Talker.Inventory.ClearItem(ID);
             Talker.Notify(string.Format("Cleared all {0}.", ID));
         }
 
