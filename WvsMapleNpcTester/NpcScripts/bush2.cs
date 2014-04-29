@@ -44,8 +44,7 @@ class bush2 : NpcScript
         else
         {
             //TODO: Make more GMS-like.
-            AddText("Please check whether your ETC. inventory is full.");
-            await SendOk();
+            Talker.Notify("Please check whether your ETC. inventory is full.");
         }
     }
 }
