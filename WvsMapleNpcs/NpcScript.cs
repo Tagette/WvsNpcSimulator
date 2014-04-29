@@ -220,7 +220,7 @@ namespace WvsGame.Maple.Scripting
         /// <param name="amount">The amount of the item.</param>
         public bool GainItem(int ID, int amount)
         {
-            Player.Inventory.GainItem(ID, amount);
+            Talker.Inventory.GainItem(ID, amount);
             Talker.Notify(string.Format("Player {0} {1} item. ({2})", amount > 0 ? "gained" : "lost", Math.Abs(amount), ID)); return amount > 0;
         }
 
