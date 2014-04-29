@@ -1,7 +1,10 @@
-﻿namespace WvsGame.Maple.Scripting
+﻿using System;
+namespace WvsGame.Maple.Scripting
 {
     public class Player
     {
+        private ConsoleColor _alertColor = ConsoleColor.DarkYellow;
+
         public static Player Default = new Player("Bob", 100, 412)
         {
             Strength = 1628,
@@ -93,6 +96,41 @@
         public QuestLog QuestLog
         {
             get { return _questLog; }
+        }
+
+        public void Notify(string text, byte type = 5)
+        {
+            var origFore = Console.ForegroundColor;
+            var origBack = Console.BackgroundColor;
+            switch (type)
+            {
+                case 0:
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    break;
+                case 1:
+                    Console.BackgroundColor = ConsoleColor.DarkBlue;
+                    break;
+                case 2:
+                    Console.BackgroundColor = ConsoleColor.DarkMagenta;
+                    break;
+                case 3:
+                    Console.BackgroundColor = ConsoleColor.DarkGreen;
+                    break;
+                case 4:
+                    Console.ForegroundColor = ConsoleColor.Black;
+                    Console.BackgroundColor = ConsoleColor.White;
+                    break;
+                case 5:
+                    Console.ForegroundColor = ConsoleColor.Magenta;
+                    break;
+                case 6:
+                    Console.ForegroundColor = ConsoleColor.Blue;
+                    break;
+
+            }
+            Console.WriteLine(text);
+            Console.ForegroundColor = origFore;
+            Console.BackgroundColor = origBack;
         }
 
     }
