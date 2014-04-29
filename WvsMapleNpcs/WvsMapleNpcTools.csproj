@@ -48,9 +48,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AsyncHelper.cs" />
+    <Compile Include="ConsoleTools.cs" />
     <Compile Include="Field.cs" />
     <Compile Include="Inventory.cs" />
     <Compile Include="Item.cs" />
+    <Compile Include="Npc.cs" />
     <Compile Include="NpcExitException.cs" />
     <Compile Include="NpcScript.cs" />
     <Compile Include="NpcSimulator.cs" />
