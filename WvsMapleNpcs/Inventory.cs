@@ -41,7 +41,8 @@ namespace WvsGame.Maple.Scripting
                     room += MAX_STACK_COUNT;
                     continue;
                 }
-                room += MAX_STACK_COUNT - _items[i].Amount;
+                if (_items[i].ID == ID)
+                    room += MAX_STACK_COUNT - _items[i].Amount;
                 if (room >= amount)
                     break;
             }
@@ -75,14 +76,14 @@ namespace WvsGame.Maple.Scripting
                     if (item.Amount < MAX_STACK_COUNT)
                     {
                         int dif = MAX_STACK_COUNT - item.Amount;
-                        item.Amount += dif;
+                        item.Amount += Math.Min(dif, amount);
                         amount -= dif;
                     }
                 }
                 while (amount > 0)
                 {
                     int newSlot = GetNextOpenSlot();
-                    _items[newSlot] = new Item(ID, "RAWR");
+                    _items[newSlot] = new Item(ID);
                     if (amount >= MAX_STACK_COUNT)
                     {
                         _items[newSlot].Amount = MAX_STACK_COUNT;
