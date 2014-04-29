@@ -12,7 +12,7 @@ namespace WvsMapleNpcTester
     {
         static void Main(string[] args)
         {
-            NpcTester tester = new NpcTester();
+            NpcSimulator simulator = new NpcSimulator();
 
             Player me = new Player("Tagette", 100, 412)
             {
@@ -24,17 +24,19 @@ namespace WvsMapleNpcTester
 
             me.Inventory.GainItem(4031013, 30);
 
-            tester.AddNpc(2100, new begin_jp1());
-            tester.AddNpc(9101001, new begin_jp2());
-            tester.AddNpc(2101, new begin_jp3());
-            tester.AddNpc(2003, new begin5());
-            tester.AddNpc(1043000, new bush1());
-            tester.AddNpc(1043001, new bush2());
-            tester.AddNpc(1072002, new change_archer());
-            tester.AddNpc(1072006, new inside_archer());
-            tester.AddNpc(1061010, new job3Exit());
+            simulator.AddPlayer(me);
 
-            tester.Run();
+            simulator.AddNpc(2100, new begin_jp1());
+            simulator.AddNpc(9101001, new begin_jp2());
+            simulator.AddNpc(2101, new begin_jp3());
+            simulator.AddNpc(2003, new begin5());
+            simulator.AddNpc(1043000, new bush1());
+            simulator.AddNpc(1043001, new bush2());
+            simulator.AddNpc(1072002, new change_archer());
+            simulator.AddNpc(1072006, new inside_archer());
+            simulator.AddNpc(1061010, new job3Exit());
+
+            simulator.Run();
         }
     }
 }

@@ -53,7 +53,7 @@
     <Compile Include="Item.cs" />
     <Compile Include="NpcExitException.cs" />
     <Compile Include="NpcScript.cs" />
-    <Compile Include="NpcTester.cs" />
+    <Compile Include="NpcSimulator.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="ProgramState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

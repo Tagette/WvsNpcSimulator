@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 namespace WvsGame.Maple.Scripting
 {
-    public class NpcTester
+    public class NpcSimulator
     {
         private int _selectedPlayer;
         private List<Player> _players;
@@ -81,8 +81,38 @@ namespace WvsGame.Maple.Scripting
             }
         }
 
-        public void ListNpcs()
+        public void AddNpc(int id, NpcScript script)
         {
+            if (_npcs == null)
+                _npcs = new Dictionary<int, NpcScript>();
+
+            _npcs.Add(id, script);
+            if (id > _maxId)
+                _maxId = id;
+        }
+
+        public void AddPlayer(Player player)
+        {
+            if (_players == null)
+                _players = new List<Player>();
+            _players.Add(player);
+        }
+
+        public void SelectPlayer(int index)
+        {
+            if (_players == null)
+                return;
+            if (index >= 0 && index < _players.Count)
+            {
+                _selectedPlayer = index;
+            }
+        }
+
+        #region Npc
+
+        protected void ListNpcs()
+        {
+            Console.WriteLine("Npcs");
             int width = _maxId.ToString().Length + 3;
             foreach (int id in _npcs.Keys)
             {
@@ -90,13 +120,11 @@ namespace WvsGame.Maple.Scripting
             }
         }
 
-        public void ShowNpcSelect()
+        protected void ShowNpcSelect()
         {
             bool exit = false;
             while (!exit)
             {
-                Console.WriteLine("Type 'exit' to return to the menu.");
-
                 Player player = Player.Default;
 
                 if (_players == null || _players.Count == 0)
@@ -106,6 +134,7 @@ namespace WvsGame.Maple.Scripting
                 else
                 {
                     ListPlayers();
+                    Console.WriteLine();
                     bool playerChoiceExit = false;
                     while (!playerChoiceExit)
                     {
@@ -125,9 +154,11 @@ namespace WvsGame.Maple.Scripting
                         {
                             Console.WriteLine("Incorrect choice.");
                         }
+                        Console.WriteLine();
                     }
                 }
 
+                Console.WriteLine("Type 'exit' to return to the menu.");
                 int npcSelection = GetIntInput("Enter an npc id> ", "exit");
                 if(npcSelection == -1)
                 {
@@ -135,6 +166,7 @@ namespace WvsGame.Maple.Scripting
                 }
                 else if (_npcs.ContainsKey(npcSelection))
                 {
+                    Console.WriteLine();
                     ExecuteNpc(npcSelection);
                     exit = true;
                 }
@@ -145,14 +177,14 @@ namespace WvsGame.Maple.Scripting
             }
         }
 
-        public void ExecuteNpc(int ID)
+        protected void ExecuteNpc(int ID)
         {
             if (!_npcs.ContainsKey(ID))
                 return;
             var npc = _npcs[ID];
             try
             {
-                npc.Player = SelectedPlayer;
+                npc.Talker = SelectedPlayer;
                 AsyncHelper.RunSync(npc.Run);
                 Console.WriteLine("Npc executed successfully.");
             }
@@ -170,7 +202,11 @@ namespace WvsGame.Maple.Scripting
             }
         }
 
-        public void ListPlayers()
+        #endregion // Npc
+
+        #region Player
+
+        private void ListPlayers()
         {
             if (_players == null || _players.Count == 0)
             {
@@ -185,7 +221,7 @@ namespace WvsGame.Maple.Scripting
             }
         }
 
-        public void ShowModifyPlayers()
+        protected void ShowModifyPlayers()
         {
             bool exit = false;
             while (!exit)
@@ -193,34 +229,29 @@ namespace WvsGame.Maple.Scripting
                 ListPlayers();
                 if (_players == null || _players.Count == 0)
                     return;
-                Console.Write("Choose> ");
-                int selection = 0;
-                if (int.TryParse(Console.ReadLine(), out selection))
+                Console.WriteLine();
+                Console.WriteLine("Type 'exit' to return to the menu.");
+                int selection = GetIntInput("Choose> ", "exit");
+                if (selection > 0 && selection <= _players.Count)
                 {
-                    if (selection > 0 && selection <= _players.Count)
-                    {
-                        Player player = _players[selection - 1];
-                        ShowModifyPlayer(player);
-                        exit = true;
-                    }
-                    else
-                    {
-                        Console.WriteLine("Incorrect choice.");
-                    }
+                    Player player = _players[selection - 1];
+                    ShowModifyPlayer(player);
+                    exit = true;
                 }
                 else
                 {
-                    Console.WriteLine("Incorrect value.");
+                    Console.WriteLine("Incorrect choice.");
                 }
             }
         }
 
-        public void ShowModifyPlayer(Player player)
+        protected void ShowModifyPlayer(Player player)
         {
 
             bool exit = false;
             while (!exit)
             {
+                Console.WriteLine("Modify Player");
                 byte selection = ShowMenu(
                     Width("Name: ", 15) + player.Name,
                     Width("Level: ", 15) + player.Level,
@@ -256,7 +287,7 @@ namespace WvsGame.Maple.Scripting
                         player.Luck = GetIntInput("Enter a new luck> ", "exit");
                         break;
                     case 8:
-                        Console.WriteLine("Not yet implemented.");
+                        ShowInventory(player.Inventory);
                         break;
                     case 9:
                         Console.WriteLine("Not yet implemented.");
@@ -268,7 +299,7 @@ namespace WvsGame.Maple.Scripting
             }
         }
 
-        public void ShowCreatePlayer()
+        protected void ShowCreatePlayer()
         {
             Player player = new Player("Bob", 1, 0);
             player.Name = GetStringInput("Enter a new name> ", "exit");
@@ -292,15 +323,265 @@ namespace WvsGame.Maple.Scripting
             player.Luck = GetIntInput("Enter a new luck> ", "exit");
             if (player.Luck < 0)
                 return;
+            int itemId = 0;
+            Console.WriteLine();
+            Console.WriteLine("Type 'done' when you are finished with the inventory.");
+            while (itemId != -1)
+            {
+                itemId = GetIntInput("Enter an item id> ", "done");
+                if (itemId > 0)
+                {
+                    bool getAmount = true;
+                    while (getAmount)
+                    {
+                        int amount = GetIntInput("Enter an amount for (" + itemId + ")> ", "done");
+                        if (amount > 0)
+                        {
+                            player.Inventory.GainItem(itemId, amount);
+                            Console.WriteLine("{0} of item {1} has been added.", amount, itemId);
+
+                            getAmount = false;
+                        }
+                        else if (amount == -1)
+                        {
+                            player.Inventory.GainItem(itemId, 1);
+                            Console.WriteLine("1 of item {0} has been added.", itemId);
+
+                            getAmount = false;
+                            itemId = -1;
+                        }
+                        else
+                        {
+                            Console.WriteLine("That is an incorrect amount.");
+                        }
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("That is an incorrect item id.");
+                }
+            }
             if (_players == null)
                 _players = new List<Player>();
             _players.Add(player);
             Console.WriteLine("Player {0} [Lvl {1} | Job {2}] has been created.", player.Name, player.Level, player.Job);
         }
 
+        #region Inventory
+
+        protected void ShowInventory(Inventory inventory)
+        {
+            bool exit = false;
+            while (!exit)
+            {
+                Console.WriteLine("Modify Inventory");
+                int selection = ShowMenu("List Items", 
+                        "Add Items", 
+                        "Remove Items", 
+                        "Clear Items", 
+                        "Return to Modify Player");
+                switch (selection)
+                {
+                    case 1:
+                        ListInventoryItems(inventory);
+                        break;
+                    case 2:
+                        ShowAddToInventory(inventory);
+                        break;
+                    case 3:
+                        ShowRemoveFromInventory(inventory);
+                        break;
+                    case 4:
+                        ShowClearFromInventory(inventory);
+                        break;
+                    case 5:
+                        exit = true;
+                        break;
+                }
+                Console.WriteLine();
+            }
+        }
+
+        protected void ListInventoryItems(Inventory inventory)
+        {
+            Console.WriteLine("Inventory Items");
+
+            int columns = 4;
+            int colWidth = 19;
+
+            for (int row = 0; row < inventory.Items.Length / columns; row++)
+            {
+                for (int column = 0; column < columns; column++)
+                {
+                    int index = (row * columns) + column;
+                    Item item = inventory.Items[index];
+                    Console.Write(Width(string.Format("{0})", index + 1), 4));
+                    if (item != null)
+                    {
+                        Console.Write(Width(string.Format("{0} x {1}", item.ID, item.Amount), colWidth - 4));
+                    }
+                    else
+                    {
+                        Console.Write(Width("[Empty]", colWidth - 4));
+                    }
+                }
+                Console.WriteLine();
+            }
+        }
+
+        protected void ShowAddToInventory(Inventory inventory)
+        {
+            int itemId = 0;
+            while (itemId != -1)
+            {
+                ListInventoryItems(inventory);
+
+                Console.WriteLine("Type 'done' when you are finished adding.");
+                itemId = GetIntInput("Enter an item id> ", "done");
+                if (itemId > 0)
+                {
+                    bool getAmount = true;
+                    while (getAmount)
+                    {
+                        int amount = GetIntInput("Enter an amount for (" + itemId + ")> ", "done");
+                        if (amount > 0)
+                        {
+                            if(inventory.GainItem(itemId, amount))
+                                Console.WriteLine("{0} of item {1} has been added.", amount, itemId);
+                            else
+                                Console.WriteLine("Could not add {0} of item {1}.", amount, itemId);
+                            getAmount = false;
+                        }
+                        else if (amount == -1)
+                        {
+                            if (inventory.GainItem(itemId, 1))
+                                Console.WriteLine("1 of item {0} has been added.", itemId);
+                            else
+                                Console.WriteLine("Could not add 1 of item {0}.", itemId);
+
+                            getAmount = false;
+                            itemId = -1;
+                        }
+                        else
+                        {
+                            Console.WriteLine("That is an incorrect amount.");
+                        }
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("That is an incorrect item id.");
+                }
+            }
+        }
+
+        protected void ShowRemoveFromInventory(Inventory inventory)
+        {
+            bool exit = false;
+            while (!exit)
+            {
+                if (inventory.IsEmpty())
+                {
+                    Console.WriteLine("This inventory is empty.");
+                    return;
+                }
+
+                ListInventoryItems(inventory);
+
+                Console.WriteLine("Type 'done' when you are finished removing.");
+                int itemId = GetIntInput("Enter item id> ", "done");
+                if (itemId > 0)
+                {
+                    if (inventory.HasItem(itemId))
+                    {
+                        Console.WriteLine("Type 'all' to remove all.");
+                        int amount = GetIntInput("Enter the amount to remove> ", "all");
+                        if (amount > 0)
+                        {
+                            if (inventory.GainItem(itemId, -amount))
+                                Console.WriteLine("{0} of item {1} has been removed.", amount, itemId);
+                            else
+                                Console.WriteLine("Could not remove {0} of item {1}.", amount, itemId);
+                        }
+                        else if (amount == -1)
+                        {
+                            amount = inventory.Count(itemId);
+                            if (inventory.GainItem(itemId, -amount))
+                                Console.WriteLine("All {0} of item {1} has been removed.", amount, itemId);
+                            else
+                                Console.WriteLine("Could not remove all of item {0}.", itemId);
+                        }
+                        else
+                        {
+                            Console.WriteLine("That is an invalid amount.");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("This inventory does not contain any {0}.", itemId);
+                    }
+                }
+                else if (itemId == -1)
+                {
+                    exit = true;
+                }
+                else
+                {
+                    Console.WriteLine("Incorrect item id.");
+                }
+                Console.WriteLine();
+            }
+        }
+
+        protected void ShowClearFromInventory(Inventory inventory)
+        {
+            bool exit = false;
+            while (!exit)
+            {
+                if (inventory.IsEmpty())
+                {
+                    Console.WriteLine("This inventory is empty.");
+                    return;
+                }
+                ListInventoryItems(inventory);
+
+                Console.WriteLine("Type 'done' when you are finished clearing.");
+                int itemId = GetIntInput("Enter an item id> ", "done");
+                if (itemId > 0)
+                {
+                    if (inventory.HasItem(itemId))
+                    {
+                        int count = inventory.Count(itemId);
+                        inventory.ClearItem(itemId);
+                        Console.WriteLine("All {0} of item {1} have been cleared.", count, itemId);
+                    }
+                    else
+                    {
+                        Console.WriteLine("This inventory does not contain any {0}.", itemId);
+                    }
+                }
+                else if (itemId == -1)
+                {
+                    exit = true;
+                }
+                else
+                {
+                    Console.WriteLine("Incorrect item id.");
+                }
+                Console.WriteLine();
+            }
+        }
+
+        #endregion // Inventory
+
+        #region Quest
+        #endregion // Quest
+
+        #endregion // Player
+
         #region Helper Methods
 
-        private string GetStringInput(string message, string cancel)
+        protected string GetStringInput(string message, string cancel)
         {
             string input = null;
             bool exit = false;
@@ -325,7 +606,7 @@ namespace WvsGame.Maple.Scripting
             return input;
         }
 
-        private int GetIntInput(string message, string cancel)
+        protected int GetIntInput(string message, string cancel)
         {
             int input = -1;
             bool exit = false;
@@ -345,12 +626,11 @@ namespace WvsGame.Maple.Scripting
                 {
                     Console.WriteLine("Incorrect value.");
                 }
-                Console.WriteLine();
             }
             return input;
         }
 
-        private byte ShowMenu(params string[] options)
+        protected byte ShowMenu(params string[] options)
         {
             byte selection = 0;
             if(options== null || options.Length == 0)
@@ -377,33 +657,6 @@ namespace WvsGame.Maple.Scripting
                 Console.WriteLine();
             }
             return selection;
-        }
-
-        public void AddNpc(int id, NpcScript script)
-        {
-            if (_npcs == null)
-                _npcs = new Dictionary<int, NpcScript>();
-
-            _npcs.Add(id, script);
-            if (id > _maxId)
-                _maxId = id;
-        }
-
-        public void AddPlayer(Player player)
-        {
-            if (_players == null)
-                _players = new List<Player>();
-            _players.Add(player);
-        }
-
-        public void SelectPlayer(int index)
-        {
-            if (_players == null)
-                return;
-            if (index >= 0 && index < _players.Count)
-            {
-                _selectedPlayer = index;
-            }
         }
 
         private string Width(string text, int width)
