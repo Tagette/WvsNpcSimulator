@@ -238,6 +238,10 @@ namespace WvsGame.Maple.Scripting
                     ShowModifyPlayer(player);
                     exit = true;
                 }
+                else if (selection == -1)
+                {
+                    exit = true;
+                }
                 else
                 {
                     Console.WriteLine("Incorrect choice.");
@@ -260,8 +264,8 @@ namespace WvsGame.Maple.Scripting
                     Width("Intelligence: ", 15) + player.Intelligence,
                     Width("Dexterity: ", 15) + player.Dexterity,
                     Width("Luck: ", 15) + player.Luck,
-                    "Inventory",
-                    "Quests",
+                    Width("Inventory:", 15) + (player.Inventory.IsEmpty() ? "[Empty]" : player.Inventory.TotalStacks() + " items"),
+                    Width("Quests", 15) + player.QuestLog.StartedQuests.Length + " started, " + player.QuestLog.CompletedQuests.Length + " completed",
                     "Return to Menu");
                 switch (selection)
                 {
@@ -290,7 +294,7 @@ namespace WvsGame.Maple.Scripting
                         ShowInventory(player.Inventory);
                         break;
                     case 9:
-                        Console.WriteLine("Not yet implemented.");
+                        ShowQuestMenu(player.QuestLog);
                         break;
                     case 10:
                         exit = true;
@@ -575,6 +579,198 @@ namespace WvsGame.Maple.Scripting
         #endregion // Inventory
 
         #region Quest
+
+        public void ShowQuestMenu(QuestLog questLog)
+        {
+            bool exit = false;
+            while (!exit)
+            {
+                byte selection = ShowMenu("Show Quests",
+                                "Start a Quest",
+                                "Abandon a Quest",
+                                "Complete a Quest",
+                                "Return to Player Menu");
+                switch (selection)
+                {
+                    case 1:
+                        ListQuests(questLog);
+                        Console.WriteLine();
+                        break;
+                    case 2:
+                        ShowStartQuest(questLog);
+                        Console.WriteLine();
+                        break;
+                    case 3:
+                        ShowAbandonQuest(questLog);
+                        Console.WriteLine();
+                        break;
+                    case 4:
+                        ShowCompleteQuest(questLog);
+                        Console.WriteLine();
+                        break;
+                    case 5:
+                        exit = true;
+                        break;
+                }
+            }
+        }
+
+        public void ListQuests(QuestLog questLog)
+        {
+            int[] startedQuests = questLog.StartedQuests;
+            int[] completedQuests = questLog.CompletedQuests;
+            Console.WriteLine("Quest Log");
+            if (startedQuests.Length > 0)
+            {
+                Console.WriteLine("In-Progress");
+                Console.WriteLine(string.Join(", ", startedQuests));
+                Console.WriteLine();
+            }
+            else
+            {
+                Console.WriteLine("No quests are in progress.");
+            }
+            if (completedQuests.Length > 0)
+            {
+                Console.WriteLine("Completed");
+                Console.WriteLine(string.Join(", ", completedQuests));
+            }
+            else
+            {
+                Console.WriteLine("No quests have been completed.");
+            }
+        }
+
+        public void ShowStartQuest(QuestLog questLog)
+        {
+            bool exit = false;
+            while (!exit)
+            {
+                Console.WriteLine("Start a Quest");
+                Console.WriteLine("Type 'done' when finished starting quests.");
+                int questId = GetIntInput("Enter a questId> ", "done");
+                if (questId > 0)
+                {
+                    if (!questLog.HasStarted(questId))
+                    {
+                        if (!questLog.HasCompleted(questId))
+                        {
+                            questLog.StartQuest(questId);
+                            Console.WriteLine("Quest {0} has been started.", questId);
+                        }
+                        else
+                        {
+                            Console.WriteLine("Quest has already been completed.");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Quest has already been started.");
+                    }
+                }
+                else if (questId == -1)
+                {
+                    exit = true;
+                }
+                else
+                {
+                    Console.WriteLine("Invalid quest Id.");
+                }
+                Console.WriteLine();
+            }
+        }
+
+        public void ShowAbandonQuest(QuestLog questLog)
+        {
+            bool exit = false;
+            while (!exit)
+            {
+                if (questLog.StartedQuests.Length == 0)
+                {
+                    Console.WriteLine("No quests have been started.");
+                    Console.WriteLine();
+                    return;
+                }
+
+                ListQuests(questLog);
+                Console.WriteLine();
+
+                Console.WriteLine("Adbandon a Quest");
+                Console.WriteLine("Type 'done' when finished abandoning quests.");
+                int questId = GetIntInput("Enter a questId> ", "done");
+                if (questId > 0)
+                {
+                    if (questLog.HasStarted(questId))
+                    {
+                        questLog.AbandonQuest(questId);
+                        Console.WriteLine("Quest {0} has been abandoned.", questId);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Quest has not been started.");
+                    }
+                }
+                else if (questId == -1)
+                {
+                    exit = true;
+                }
+                else
+                {
+                    Console.WriteLine("Invalid quest Id.");
+                }
+            }
+            Console.WriteLine();
+        }
+
+        public void ShowCompleteQuest(QuestLog questLog)
+        {
+            if (questLog.StartedQuests.Length == 0)
+            {
+                Console.WriteLine("No quests have been started.");
+                Console.WriteLine();
+                return;
+            }
+
+            bool exit = false;
+            while (!exit)
+            {
+                ListQuests(questLog);
+                Console.WriteLine();
+
+                Console.WriteLine("Complete a Quest");
+                Console.WriteLine("Type 'done' when finished completing quests.");
+                int questId = GetIntInput("Enter a questId> ", "done");
+                if (questId > 0)
+                {
+                    if (!questLog.HasCompleted(questId))
+                    {
+                        if (questLog.HasStarted(questId))
+                        {
+                            questLog.CompleteQuest(questId);
+                            Console.WriteLine("Quest {0} has been completed.", questId);
+                        }
+                        else
+                        {
+                            Console.WriteLine("Quest has not been started.");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Quest has already been completed.");
+                    }
+                }
+                else if (questId == -1)
+                {
+                    exit = true;
+                }
+                else
+                {
+                    Console.WriteLine("Invalid quest Id.");
+                }
+            }
+            Console.WriteLine();
+        }
+
         #endregion // Quest
 
         #endregion // Player
