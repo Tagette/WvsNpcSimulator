@@ -26,6 +26,32 @@ namespace WvsGame.Maple.Scripting
             get { return _items; }
         }
 
+        public int TotalItems()
+        {
+            int total = 0;
+            for (int i = 0; i < _items.Length; i++)
+            {
+                if (_items[i] != null)
+                {
+                    total += _items[i].Amount;
+                }
+            }
+            return total;
+        }
+
+        public int TotalStacks()
+        {
+            int total = 0;
+            for (int i = 0; i < _items.Length; i++)
+            {
+                if (_items[i] != null)
+                {
+                    total++;
+                }
+            }
+            return total;
+        }
+
         public bool IsEmpty()
         {
             bool empty = true;
