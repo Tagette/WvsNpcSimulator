@@ -263,14 +263,14 @@ namespace WvsGame.Maple.Scripting
         /// Returns true if the talker has the given quest started.
         /// </summary>
         /// <param name="ID">The maple id of the quest.</param>
-        public bool HasQuestStarted(int ID) { return false; }
+        public bool HasQuestStarted(int ID) { return Talker.QuestLog.HasStarted(ID); }
 
         /// <summary>
         /// Returns if the talker has the given quest completed.
         /// </summary>
         /// <param name="ID">The maple id of the quest.</param>
         /// <returns></returns>
-        public bool HasQuestCompleted(int ID) { return true; }
+        public bool HasQuestCompleted(int ID) { return Talker.QuestLog.HasCompleted(ID); }
 
         /// <summary>
         /// Returns the content of the given file.
