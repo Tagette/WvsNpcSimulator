@@ -580,7 +580,7 @@ namespace WvsGame.Maple.Scripting
 
         #region Quest
 
-        public void ShowQuestMenu(QuestLog questLog)
+        protected void ShowQuestMenu(QuestLog questLog)
         {
             bool exit = false;
             while (!exit)
@@ -615,7 +615,7 @@ namespace WvsGame.Maple.Scripting
             }
         }
 
-        public void ListQuests(QuestLog questLog)
+        protected void ListQuests(QuestLog questLog)
         {
             int[] startedQuests = questLog.StartedQuests;
             int[] completedQuests = questLog.CompletedQuests;
@@ -641,7 +641,7 @@ namespace WvsGame.Maple.Scripting
             }
         }
 
-        public void ShowStartQuest(QuestLog questLog)
+        protected void ShowStartQuest(QuestLog questLog)
         {
             bool exit = false;
             while (!exit)
@@ -680,7 +680,7 @@ namespace WvsGame.Maple.Scripting
             }
         }
 
-        public void ShowAbandonQuest(QuestLog questLog)
+        protected void ShowAbandonQuest(QuestLog questLog)
         {
             bool exit = false;
             while (!exit)
@@ -722,7 +722,7 @@ namespace WvsGame.Maple.Scripting
             Console.WriteLine();
         }
 
-        public void ShowCompleteQuest(QuestLog questLog)
+        protected void ShowCompleteQuest(QuestLog questLog)
         {
             if (questLog.StartedQuests.Length == 0)
             {
