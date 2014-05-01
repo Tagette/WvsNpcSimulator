@@ -154,26 +154,27 @@ namespace WvsGame.Maple.Scripting
                         {
                             Console.WriteLine("Incorrect choice.");
                         }
-                        Console.WriteLine();
                     }
                 }
 
                 Console.WriteLine("Type 'exit' to return to the menu.");
-                int npcSelection = GetIntInput("Enter an npc id> ", "exit");
-                if(npcSelection == -1)
+                int npcId = GetIntInput("Enter an npc id> ", "exit");
+                if(npcId == -1)
                 {
                     exit = true;
                 }
-                else if (_npcs.ContainsKey(npcSelection))
+                else if (_npcs.ContainsKey(npcId))
                 {
                     Console.WriteLine();
-                    ExecuteNpc(npcSelection);
+                    Console.WriteLine("Executing npc " + npcId + ".");
+                    ExecuteNpc(npcId);
                     exit = true;
                 }
                 else
                 {
-                    Console.WriteLine("Npc with ID of " + npcSelection + " could not be found.");
+                    Console.WriteLine("Npc with ID of " + npcId + " could not be found.");
                 }
+                Console.WriteLine();
             }
         }
 
