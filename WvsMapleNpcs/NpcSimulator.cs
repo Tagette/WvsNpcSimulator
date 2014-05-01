@@ -81,6 +81,9 @@ namespace WvsGame.Maple.Scripting
             }
         }
 
+        /// <summary>
+        /// Adds an npc to the simulator so it can be executed.
+        /// </summary>
         public void AddNpc(int id, NpcScript script)
         {
             if (_npcs == null)
@@ -91,6 +94,9 @@ namespace WvsGame.Maple.Scripting
                 _maxId = id;
         }
 
+        /// <summary>
+        /// Adds a player to the simulator so it can be used when talking with the npc.
+        /// </summary>
         public void AddPlayer(Player player)
         {
             if (_players == null)
@@ -98,6 +104,10 @@ namespace WvsGame.Maple.Scripting
             _players.Add(player);
         }
 
+        /// <summary>
+        /// Selects the player using a number (starting at 0) int the order the player was added.
+        /// This player will be used by default when the simulation is run.
+        /// </summary>
         public void SelectPlayer(int index)
         {
             if (_players == null)

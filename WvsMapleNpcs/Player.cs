@@ -34,70 +34,113 @@ namespace WvsGame.Maple.Scripting
             _questLog = new QuestLog();
         }
 
+        /// <summary>
+        /// The nam eof the player.
+        /// </summary>
         public string Name
         {
             get { return _name; }
             set { _name = value; }
         }
 
+        /// <summary>
+        /// The level of the player.
+        /// </summary>
         public int Level
         {
             get { return _level; }
             set { _level = value; }
         }
 
+        /// <summary>
+        /// The job of the player represented using a number.
+        /// </summary>
         public int Job
         {
             get { return _job; }
             set { _job = value; }
         }
 
+        /// <summary>
+        /// The amount of maple currency the player has.
+        /// </summary>
         public int Meso
         {
             get { return _meso; }
             set { _meso = value; }
         }
 
+        /// <summary>
+        /// The maplestory field (map) id.
+        /// </summary>
         public int Field
         {
             get { return _field; }
             set { _field = value; }
         }
 
+        /// <summary>
+        /// The strength of the player.
+        /// </summary>
         public int Strength
         {
             get { return _str; }
             set { _str = value; }
         }
 
+        /// <summary>
+        /// The intelligence of the player.
+        /// </summary>
         public int Intelligence
         {
             get { return _int; }
             set { _int = value; }
         }
 
+        /// <summary>
+        /// The dexterity of the player.
+        /// </summary>
         public int Dexterity
         {
             get { return _dex; }
             set { _dex = value; }
         }
 
+        /// <summary>
+        /// The luck of the player.
+        /// </summary>
         public int Luck
         {
             get { return _luk; }
             set { _luk = value; }
         }
 
+        /// <summary>
+        /// Access to the player's inventory.
+        /// </summary>
         public Inventory Inventory
         {
             get { return _inventory; }
         }
 
+        /// <summary>
+        /// Access to the player's quest log.
+        /// </summary>
         public QuestLog QuestLog
         {
             get { return _questLog; }
         }
 
+        /// <summary>
+        /// Sends a message to the player in various ways.
+        /// 0 - Notice
+        /// 1 - Popup
+        /// 2 - Megaphone
+        /// 3 - Super Megaphone
+        /// 4 - Header
+        /// 5 - Blue
+        /// 6 - Pink
+        /// </summary>
         public void Notify(string text, byte type = 5)
         {
             var origFore = Console.ForegroundColor;

@@ -13,26 +13,41 @@ namespace WvsGame.Maple.Scripting
             _completedQuests = new List<int>();
         }
 
+        /// <summary>
+        /// Gets an integer array copy of the started quests.
+        /// </summary>
         public int[] StartedQuests
         {
             get { return _startedQuests.ToArray(); }
         }
 
+        /// <summary>
+        /// Gets an integer array copy of the completed quests.
+        /// </summary>
         public int[] CompletedQuests
         {
             get { return _completedQuests.ToArray(); }
         }
 
+        /// <summary>
+        /// Determines whether or not a quest has been started.
+        /// </summary>
         public bool HasStarted(int ID)
         {
             return _startedQuests.Contains(ID);
         }
 
+        /// <summary>
+        /// Determines whether or not a quest has been completed.
+        /// </summary>
         public bool HasCompleted(int ID)
         {
             return _completedQuests.Contains(ID);
         }
 
+        /// <summary>
+        /// Starts a quest for the player.
+        /// </summary>
         public bool StartQuest(int ID)
         {
             bool started = false;
@@ -44,6 +59,9 @@ namespace WvsGame.Maple.Scripting
             return started;
         }
 
+        /// <summary>
+        /// Abandons a quest for a player.
+        /// </summary>
         public bool AbandonQuest(int ID)
         {
             bool existed = false;
@@ -54,6 +72,9 @@ namespace WvsGame.Maple.Scripting
             return existed;
         }
 
+        /// <summary>
+        /// Completes a quest for a player.
+        /// </summary>
         public bool CompleteQuest(int ID)
         {
             bool completed = false;
